@@ -1,0 +1,407 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: Antminer
+    folder: Alerts
+    interval: 30s
+    rules:
+      - uid: antminer-target-down
+        title: AntminerTargetDown
+        condition: C
+        for: 5m
+        noDataState: Alerting
+        execErrState: Error
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer target is down: {{ $labels.instance }}"
+          description: "Prometheus has not been able to scrape the Antminer exporter target {{ $labels.instance }} for 5 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "13"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              expr: up{job="antminer"} == bool 0
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-api-down
+        title: AntminerApiDown
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer API scrape failed: {{ $labels.instance }}"
+          description: "The exporter is reachable, but the Antminer API scrape for {{ $labels.instance }} has failed for 5 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "13"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              expr: antminer_up{job="antminer"} == bool 0
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-no-alive-pool
+        title: AntminerNoAlivePool
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer has no alive pools: {{ $labels.instance }}"
+          description: "No configured pool is alive for {{ $labels.instance }}."
+          __dashboardUid__: antminer-s21
+          __panelId__: "12"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              expr: sum by (instance) (antminer_pool_alive{job="antminer"}) < bool 1
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-hashrate-low
+        title: AntminerHashrateLow
+        condition: C
+        for: 15m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer hashrate is low: {{ $labels.instance }}"
+          description: "30 minute hashrate on {{ $labels.instance }} has been below 85% of ideal for 15 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "2"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 1800
+              to: 0
+            model:
+              expr: antminer_hashrate_30m_ghs{job="antminer"} / antminer_hashrate_ideal_ghs{job="antminer"} < bool 0.85
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-status-not-ok
+        title: AntminerStatusNotOk
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer component status is not OK: {{ $labels.instance }}"
+          description: "Component status {{ $labels.type }} on {{ $labels.instance }} has been unhealthy for 5 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "11"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              expr: antminer_status_ok{job="antminer"} == bool 0
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-chip-temperature-high
+        title: AntminerChipTemperatureHigh
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer chip temperature is high: {{ $labels.instance }}"
+          description: "Maximum chip temperature on {{ $labels.instance }} has been above 85C for 5 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "7"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              expr: max by (instance) (antminer_chain_temp_chip_celsius{job="antminer"}) > bool 85
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-chip-temperature-critical
+        title: AntminerChipTemperatureCritical
+        condition: C
+        for: 2m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer chip temperature is critical: {{ $labels.instance }}"
+          description: "Maximum chip temperature on {{ $labels.instance }} has been above 95C for 2 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "7"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              expr: max by (instance) (antminer_chain_temp_chip_celsius{job="antminer"}) > bool 95
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-fan-stopped
+        title: AntminerFanStopped
+        condition: C
+        for: 2m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer fan may be stopped: {{ $labels.instance }}"
+          description: "Fan {{ $labels.fan }} on {{ $labels.instance }} has been below 1000 RPM for 2 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "9"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 300
+              to: 0
+            model:
+              expr: antminer_fan_rpm{job="antminer"} < bool 1000
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-fan-imbalance
+        title: AntminerFanImbalance
+        condition: C
+        for: 5m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer fan RPM imbalance: {{ $labels.instance }}"
+          description: "The slowest fan on {{ $labels.instance }} has been below 70% of the fastest fan for 5 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "9"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 600
+              to: 0
+            model:
+              expr: min by (instance) (antminer_fan_rpm{job="antminer"}) / max by (instance) (antminer_fan_rpm{job="antminer"}) < bool 0.7
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]
+
+      - uid: antminer-scrape-slow
+        title: AntminerScrapeSlow
+        condition: C
+        for: 10m
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer scrape is slow: {{ $labels.instance }}"
+          description: "Exporter scrape duration for {{ $labels.instance }} has been above 4 seconds for 10 minutes."
+          __dashboardUid__: antminer-s21
+          __panelId__: "13"
+        data:
+          - refId: A
+            datasourceUid: ${DS_PROMETHEUS}
+            relativeTimeRange:
+              from: 900
+              to: 0
+            model:
+              expr: max by (instance) (antminer_scrape_duration_seconds{job="antminer"}) > bool 4
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              expression: A
+              reducer: last
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: threshold
+              expression: B
+              conditions:
+                - evaluator:
+                    type: gt
+                    params: [0]

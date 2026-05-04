@@ -1,0 +1,200 @@
+{
+  "uid": "antminer-s21",
+  "title": "Antminer S21",
+  "tags": ["home", "antminer", "s21"],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "templating": {
+    "list": [
+      {
+        "name": "instance",
+        "type": "query",
+        "label": "Miner",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${DS_PROMETHEUS}"
+        },
+        "query": "label_values(antminer_up, instance)",
+        "refresh": 1,
+        "sort": 1,
+        "multi": true,
+        "includeAll": true,
+        "allValue": ".*",
+        "current": {
+          "selected": true,
+          "text": "All",
+          "value": "$__all"
+        }
+      }
+    ]
+  },
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "panels": [
+    {
+      "id": 1,
+      "type": "stat",
+      "title": "Availability",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
+      "targets": [{"refId": "A", "expr": "antminer_up{instance=~\"$instance\"}", "legendFormat": "{{instance}}"}],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bool",
+          "min": 0,
+          "max": 1,
+          "thresholds": {"mode": "absolute", "steps": [{"color": "red", "value": null}, {"color": "green", "value": 1}]},
+          "mappings": [{"type": "value", "options": {"0": {"text": "Down", "color": "red"}, "1": {"text": "Up", "color": "green"}}}]
+        },
+        "overrides": []
+      },
+      "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "background", "graphMode": "none", "justifyMode": "auto"}
+    },
+    {
+      "id": 2,
+      "type": "stat",
+      "title": "30m Hashrate",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
+      "targets": [{"refId": "A", "expr": "antminer_hashrate_30m_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}}"}],
+      "fieldConfig": {"defaults": {"unit": "Hs", "decimals": 2}, "overrides": []},
+      "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area", "justifyMode": "auto"}
+    },
+    {
+      "id": 3,
+      "type": "stat",
+      "title": "Power",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
+      "targets": [{"refId": "A", "expr": "antminer_power_watts{instance=~\"$instance\"}", "legendFormat": "{{instance}}"}],
+      "fieldConfig": {"defaults": {"unit": "watt", "decimals": 0}, "overrides": []},
+      "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area", "justifyMode": "auto"}
+    },
+    {
+      "id": 4,
+      "type": "stat",
+      "title": "Efficiency",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
+      "targets": [{"refId": "A", "expr": "antminer_efficiency_j_per_th{instance=~\"$instance\"}", "legendFormat": "{{instance}}"}],
+      "fieldConfig": {"defaults": {"unit": "none", "decimals": 2}, "overrides": []},
+      "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area", "justifyMode": "auto"}
+    },
+    {
+      "id": 5,
+      "type": "timeseries",
+      "title": "Current Hashrate",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
+      "targets": [{"refId": "A", "expr": "antminer_hashrate_5s_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}} current"}],
+      "fieldConfig": {"defaults": {"unit": "Hs", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    },
+    {
+      "id": 6,
+      "type": "timeseries",
+      "title": "Per-Chain Hashrate",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
+      "targets": [{"refId": "A", "expr": "antminer_chain_hashrate_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}} chain {{chain}}"}],
+      "fieldConfig": {"defaults": {"unit": "Hs", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    },
+    {
+      "id": 7,
+      "type": "timeseries",
+      "title": "Chip Temperature",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
+      "targets": [{"refId": "A", "expr": "antminer_chain_temp_chip_celsius{instance=~\"$instance\"}", "legendFormat": "{{instance}} chain {{chain}} sensor {{sensor}}"}],
+      "fieldConfig": {"defaults": {"unit": "celsius", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 85}, {"color": "red", "value": 95}]}, "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true, "thresholdsStyle": {"mode": "line"}, "axisSoftMax": 100}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["max", "lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "desc"}}
+    },
+    {
+      "id": 8,
+      "type": "timeseries",
+      "title": "PCB Temperature",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
+      "targets": [{"refId": "A", "expr": "antminer_chain_temp_pcb_celsius{instance=~\"$instance\"}", "legendFormat": "{{instance}} chain {{chain}} sensor {{sensor}}"}],
+      "fieldConfig": {"defaults": {"unit": "celsius", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["max", "lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "desc"}}
+    },
+    {
+      "id": 9,
+      "type": "timeseries",
+      "title": "Fan RPM",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20},
+      "targets": [{"refId": "A", "expr": "antminer_fan_rpm{instance=~\"$instance\"}", "legendFormat": "{{instance}} fan {{fan}}"}],
+      "fieldConfig": {"defaults": {"unit": "rpm", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["min", "max", "lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    },
+    {
+      "id": 10,
+      "type": "timeseries",
+      "title": "Power And Efficiency",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20},
+      "targets": [
+        {"refId": "A", "expr": "antminer_power_watts{instance=~\"$instance\"}", "legendFormat": "{{instance}} W"},
+        {"refId": "B", "expr": "antminer_efficiency_j_per_th{instance=~\"$instance\"}", "legendFormat": "{{instance}} J/TH"}
+      ],
+      "fieldConfig": {"defaults": {"custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    },
+    {
+      "id": 11,
+      "type": "timeseries",
+      "title": "Component Health",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 7, "w": 8, "x": 0, "y": 28},
+      "targets": [{"refId": "A", "expr": "antminer_status_ok{instance=~\"$instance\"}", "legendFormat": "{{instance}} {{type}}"}],
+      "fieldConfig": {"defaults": {"unit": "bool", "min": 0, "max": 1, "custom": {"drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 20, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    },
+    {
+      "id": 12,
+      "type": "timeseries",
+      "title": "Pool Alive",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 7, "w": 8, "x": 8, "y": 28},
+      "targets": [{"refId": "A", "expr": "antminer_pool_alive{instance=~\"$instance\"}", "legendFormat": "{{instance}} pool {{pool}}"}],
+      "fieldConfig": {"defaults": {"unit": "bool", "min": 0, "max": 1, "custom": {"drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 20, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    },
+    {
+      "id": 13,
+      "type": "timeseries",
+      "title": "Scrape Health",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 7, "w": 8, "x": 16, "y": 28},
+      "targets": [
+        {"refId": "A", "expr": "up{job=\"antminer\",instance=~\"$instance\"}", "legendFormat": "{{instance}} Prometheus up"},
+        {"refId": "B", "expr": "antminer_scrape_duration_seconds{instance=~\"$instance\"}", "legendFormat": "{{instance}} scrape seconds"}
+      ],
+      "fieldConfig": {"defaults": {"custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    }
+  ]
+}

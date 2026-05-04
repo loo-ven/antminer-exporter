@@ -1,0 +1,122 @@
+groups:
+  - name: antminer
+    rules:
+      - alert: AntminerTargetDown
+        expr: up{job="antminer"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer target is down: {{ $labels.instance }}"
+          description: "Prometheus has not been able to scrape the Antminer exporter target {{ $labels.instance }} for 5 minutes."
+
+      - alert: AntminerApiDown
+        expr: antminer_up{job="antminer"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer API scrape failed: {{ $labels.instance }}"
+          description: "The exporter is reachable, but the Antminer API scrape for {{ $labels.instance }} has failed for 5 minutes."
+
+      - alert: AntminerNoAlivePool
+        expr: sum by (instance) (antminer_pool_alive{job="antminer"}) < 1
+        for: 5m
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer has no alive pools: {{ $labels.instance }}"
+          description: "No configured pool is alive for {{ $labels.instance }}."
+
+      - alert: AntminerHashrateLow
+        expr: antminer_hashrate_30m_ghs{job="antminer"} / antminer_hashrate_ideal_ghs{job="antminer"} < 0.85
+        for: 15m
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer hashrate is low: {{ $labels.instance }}"
+          description: "30 minute hashrate on {{ $labels.instance }} has been below 85% of ideal for 15 minutes."
+
+      - alert: AntminerStatusNotOk
+        expr: antminer_status_ok{job="antminer"} == 0
+        for: 5m
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer component status is not OK: {{ $labels.instance }}"
+          description: "Component status {{ $labels.type }} on {{ $labels.instance }} has been unhealthy for 5 minutes."
+
+      - alert: AntminerChipTemperatureHigh
+        expr: max by (instance) (antminer_chain_temp_chip_celsius{job="antminer"}) > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer chip temperature is high: {{ $labels.instance }}"
+          description: "Maximum chip temperature on {{ $labels.instance }} has been above 85C for 5 minutes."
+
+      - alert: AntminerChipTemperatureCritical
+        expr: max by (instance) (antminer_chain_temp_chip_celsius{job="antminer"}) > 95
+        for: 2m
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer chip temperature is critical: {{ $labels.instance }}"
+          description: "Maximum chip temperature on {{ $labels.instance }} has been above 95C for 2 minutes."
+
+      - alert: AntminerFanStopped
+        expr: antminer_fan_rpm{job="antminer"} < 1000
+        for: 2m
+        labels:
+          severity: critical
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer fan may be stopped: {{ $labels.instance }}"
+          description: "Fan {{ $labels.fan }} on {{ $labels.instance }} has been below 1000 RPM for 2 minutes."
+
+      - alert: AntminerFanImbalance
+        expr: min by (instance) (antminer_fan_rpm{job="antminer"}) / max by (instance) (antminer_fan_rpm{job="antminer"}) < 0.7
+        for: 5m
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer fan RPM imbalance: {{ $labels.instance }}"
+          description: "The slowest fan on {{ $labels.instance }} has been below 70% of the fastest fan for 5 minutes."
+
+      - alert: AntminerScrapeSlow
+        expr: max by (instance) (antminer_scrape_duration_seconds{job="antminer"}) > 4
+        for: 10m
+        labels:
+          severity: warning
+          service: antminer
+          source: prometheus
+          scope: miner
+        annotations:
+          summary: "Antminer scrape is slow: {{ $labels.instance }}"
+          description: "Exporter scrape duration for {{ $labels.instance }} has been above 4 seconds for 10 minutes."

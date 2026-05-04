@@ -1,0 +1,12 @@
+services:
+  antminer-exporter:
+    build: .
+    container_name: antminer-exporter
+    restart: unless-stopped
+    env_file:
+      - path: .env.example
+        required: true
+      - path: .env
+        required: false
+    ports:
+      - "9154:9154"

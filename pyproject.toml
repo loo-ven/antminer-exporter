@@ -1,0 +1,41 @@
+[project]
+name = "antminer-exporter"
+version = "0.1.0"
+description = "Unofficial Prometheus exporter for the modern Bitmain Antminer web API"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { file = "LICENSE" }
+authors = [
+  { name = "loo-ven" }
+]
+keywords = ["antminer", "bitmain", "prometheus", "grafana", "exporter", "s21"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: System Administrators",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: System :: Monitoring",
+]
+dependencies = [
+  "httpx==0.28.1",
+  "prometheus-client==0.21.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/loo-ven/antminer-exporter"
+Issues = "https://github.com/loo-ven/antminer-exporter/issues"
+Author = "https://github.com/loo-ven"
+
+[project.scripts]
+antminer-exporter = "antminer_exporter.app:main"
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
