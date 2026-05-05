@@ -12,8 +12,8 @@ and the exporter receives the miner IP in `?target=...`.
 - Scrapes modern Antminer HTTP Digest API.
 - Supports `GET /metrics?target=<miner-ip>`.
 - Keeps miner targets behind an allowlist.
-- Exposes hashrate, power, efficiency, fan, chain temperature, chain hashrate,
-  pool state, component health, and scrape health metrics.
+- Exposes hashrate, power, efficiency, fan, ambient and chain temperature,
+  chain hashrate, pool state, component health, and scrape health metrics.
 - Does not export pool URLs, pool users, pool passwords, or miner configuration.
 - Includes a Grafana dashboard for Antminer S21/S21+.
 
@@ -66,6 +66,7 @@ antminer_hashrate_avg_ghs
 antminer_hashrate_ideal_ghs
 antminer_power_watts
 antminer_efficiency_j_per_th
+antminer_ambient_temp_celsius
 antminer_fan_rpm{fan="0"}
 antminer_chain_hashrate_ghs{chain="0"}
 antminer_chain_temp_chip_celsius{chain="0",sensor="0"}
@@ -157,6 +158,7 @@ Panels included:
 - Per-Chain Hashrate
 - Chip Temperature
 - PCB Temperature
+- Ambient Temperature
 - Fan RPM
 - Power And Efficiency
 - Component Health

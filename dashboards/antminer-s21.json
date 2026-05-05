@@ -57,7 +57,7 @@
       "title": "Availability",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 4, "w": 6, "x": 0, "y": 0},
-      "targets": [{"refId": "A", "expr": "antminer_up{instance=~\"$instance\"}", "legendFormat": "{{instance}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance) (antminer_up{instance=~\"$instance\"})", "legendFormat": "{{instance}}"}],
       "fieldConfig": {
         "defaults": {
           "unit": "bool",
@@ -76,7 +76,7 @@
       "title": "30m Hashrate",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
-      "targets": [{"refId": "A", "expr": "antminer_hashrate_30m_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance) (antminer_hashrate_30m_ghs{instance=~\"$instance\"}) / 1000", "legendFormat": "{{instance}}"}],
       "fieldConfig": {"defaults": {"unit": "suffix: TH/s", "decimals": 2}, "overrides": []},
       "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area", "justifyMode": "auto"}
     },
@@ -86,7 +86,7 @@
       "title": "Power",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 4, "w": 6, "x": 12, "y": 0},
-      "targets": [{"refId": "A", "expr": "antminer_power_watts{instance=~\"$instance\"}", "legendFormat": "{{instance}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance) (antminer_power_watts{instance=~\"$instance\"})", "legendFormat": "{{instance}}"}],
       "fieldConfig": {"defaults": {"unit": "watt", "decimals": 0}, "overrides": []},
       "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area", "justifyMode": "auto"}
     },
@@ -96,7 +96,7 @@
       "title": "Efficiency",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 4, "w": 6, "x": 18, "y": 0},
-      "targets": [{"refId": "A", "expr": "antminer_efficiency_j_per_th{instance=~\"$instance\"}", "legendFormat": "{{instance}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance) (antminer_efficiency_j_per_th{instance=~\"$instance\"})", "legendFormat": "{{instance}}"}],
       "fieldConfig": {"defaults": {"unit": "none", "decimals": 2}, "overrides": []},
       "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area", "justifyMode": "auto"}
     },
@@ -106,7 +106,7 @@
       "title": "Current Hashrate",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
-      "targets": [{"refId": "A", "expr": "antminer_hashrate_5s_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}} current"}],
+      "targets": [{"refId": "A", "expr": "max by (instance) (antminer_hashrate_5s_ghs{instance=~\"$instance\"}) / 1000", "legendFormat": "{{instance}} current"}],
       "fieldConfig": {"defaults": {"unit": "suffix: TH/s", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
     },
@@ -116,7 +116,7 @@
       "title": "Per-Chain Hashrate",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
-      "targets": [{"refId": "A", "expr": "antminer_chain_hashrate_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}} chain {{chain}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance, chain) (antminer_chain_hashrate_ghs{instance=~\"$instance\"}) / 1000", "legendFormat": "{{instance}} chain {{chain}}"}],
       "fieldConfig": {"defaults": {"unit": "suffix: TH/s", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
     },
@@ -126,7 +126,7 @@
       "title": "Chip Temperature",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 12},
-      "targets": [{"refId": "A", "expr": "antminer_chain_temp_chip_celsius{instance=~\"$instance\"}", "legendFormat": "{{instance}} chain {{chain}} sensor {{sensor}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance, chain, sensor) (antminer_chain_temp_chip_celsius{instance=~\"$instance\"})", "legendFormat": "{{instance}} chain {{chain}} sensor {{sensor}}"}],
       "fieldConfig": {"defaults": {"unit": "celsius", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 85}, {"color": "red", "value": 95}]}, "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true, "thresholdsStyle": {"mode": "line"}, "axisSoftMax": 100}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["max", "lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "desc"}}
     },
@@ -136,7 +136,7 @@
       "title": "PCB Temperature",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 12},
-      "targets": [{"refId": "A", "expr": "antminer_chain_temp_pcb_celsius{instance=~\"$instance\"}", "legendFormat": "{{instance}} chain {{chain}} sensor {{sensor}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance, chain, sensor) (antminer_chain_temp_pcb_celsius{instance=~\"$instance\"})", "legendFormat": "{{instance}} chain {{chain}} sensor {{sensor}}"}],
       "fieldConfig": {"defaults": {"unit": "celsius", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["max", "lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "desc"}}
     },
@@ -146,7 +146,7 @@
       "title": "Fan RPM",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 20},
-      "targets": [{"refId": "A", "expr": "antminer_fan_rpm{instance=~\"$instance\"}", "legendFormat": "{{instance}} fan {{fan}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance, fan) (antminer_fan_rpm{instance=~\"$instance\"})", "legendFormat": "{{instance}} fan {{fan}}"}],
       "fieldConfig": {"defaults": {"unit": "rpm", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 1, "fillOpacity": 0, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["min", "max", "lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
     },
@@ -157,8 +157,8 @@
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 20},
       "targets": [
-        {"refId": "A", "expr": "antminer_power_watts{instance=~\"$instance\"}", "legendFormat": "{{instance}} W"},
-        {"refId": "B", "expr": "antminer_efficiency_j_per_th{instance=~\"$instance\"}", "legendFormat": "{{instance}} J/TH"}
+        {"refId": "A", "expr": "max by (instance) (antminer_power_watts{instance=~\"$instance\"})", "legendFormat": "{{instance}} W"},
+        {"refId": "B", "expr": "max by (instance) (antminer_efficiency_j_per_th{instance=~\"$instance\"})", "legendFormat": "{{instance}} J/TH"}
       ],
       "fieldConfig": {"defaults": {"custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
@@ -169,7 +169,7 @@
       "title": "Component Health",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 7, "w": 8, "x": 0, "y": 28},
-      "targets": [{"refId": "A", "expr": "antminer_status_ok{instance=~\"$instance\"}", "legendFormat": "{{instance}} {{type}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance, type) (antminer_status_ok{instance=~\"$instance\"})", "legendFormat": "{{instance}} {{type}}"}],
       "fieldConfig": {"defaults": {"unit": "bool", "min": 0, "max": 1, "custom": {"drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 20, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
     },
@@ -179,7 +179,7 @@
       "title": "Pool Alive",
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 7, "w": 8, "x": 8, "y": 28},
-      "targets": [{"refId": "A", "expr": "antminer_pool_alive{instance=~\"$instance\"}", "legendFormat": "{{instance}} pool {{pool}}"}],
+      "targets": [{"refId": "A", "expr": "max by (instance, pool) (antminer_pool_alive{instance=~\"$instance\"})", "legendFormat": "{{instance}} pool {{pool}}"}],
       "fieldConfig": {"defaults": {"unit": "bool", "min": 0, "max": 1, "custom": {"drawStyle": "line", "lineInterpolation": "stepAfter", "lineWidth": 2, "fillOpacity": 20, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
     },
@@ -190,11 +190,21 @@
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 7, "w": 8, "x": 16, "y": 28},
       "targets": [
-        {"refId": "A", "expr": "up{job=\"antminer\",instance=~\"$instance\"}", "legendFormat": "{{instance}} Prometheus up"},
-        {"refId": "B", "expr": "antminer_scrape_duration_seconds{instance=~\"$instance\"}", "legendFormat": "{{instance}} scrape seconds"}
+        {"refId": "A", "expr": "max by (instance) (up{job=\"antminer\",instance=~\"$instance\"})", "legendFormat": "{{instance}} Prometheus up"},
+        {"refId": "B", "expr": "max by (instance) (antminer_scrape_duration_seconds{instance=~\"$instance\"})", "legendFormat": "{{instance}} scrape seconds"}
       ],
       "fieldConfig": {"defaults": {"custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
+    },
+    {
+      "id": 14,
+      "type": "timeseries",
+      "title": "Ambient Temperature",
+      "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
+      "gridPos": {"h": 8, "w": 24, "x": 0, "y": 35},
+      "targets": [{"refId": "A", "expr": "max by (instance) (antminer_ambient_temp_celsius{instance=~\"$instance\"})", "legendFormat": "{{instance}} ambient"}],
+      "fieldConfig": {"defaults": {"unit": "celsius", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 38}, {"color": "red", "value": 40}]}, "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 5, "showPoints": "never", "spanNulls": true, "thresholdsStyle": {"mode": "line"}, "axisSoftMax": 45}}, "overrides": []},
+      "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["max", "lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "desc"}}
     }
   ]
 }

@@ -129,6 +129,11 @@ def build_metrics(target):
         "Antminer reported efficiency in J/TH.",
         registry=registry,
     )
+    ambient_temp = Gauge(
+        "antminer_ambient_temp_celsius",
+        "Antminer reported ambient temperature in Celsius.",
+        registry=registry,
+    )
 
     fan_rpm = Gauge("antminer_fan_rpm", "Antminer fan RPM.", ["fan"], registry=registry)
     chain_hashrate = Gauge(
@@ -207,6 +212,10 @@ def build_metrics(target):
                 break
         if value is not None:
             gauge.set(value)
+
+    value = to_float(stats.get("ambient_temp"))
+    if value is not None:
+        ambient_temp.set(value)
 
     fans = stats.get("fan") if isinstance(stats.get("fan"), list) else []
     for idx, rpm in enumerate(fans):
