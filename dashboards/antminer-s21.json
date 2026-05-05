@@ -77,7 +77,7 @@
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 4, "w": 6, "x": 6, "y": 0},
       "targets": [{"refId": "A", "expr": "antminer_hashrate_30m_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}}"}],
-      "fieldConfig": {"defaults": {"unit": "Hs", "decimals": 2}, "overrides": []},
+      "fieldConfig": {"defaults": {"unit": "suffix: TH/s", "decimals": 2}, "overrides": []},
       "options": {"reduceOptions": {"values": false, "calcs": ["lastNotNull"], "fields": ""}, "orientation": "auto", "textMode": "auto", "colorMode": "value", "graphMode": "area", "justifyMode": "auto"}
     },
     {
@@ -107,7 +107,7 @@
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 4},
       "targets": [{"refId": "A", "expr": "antminer_hashrate_5s_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}} current"}],
-      "fieldConfig": {"defaults": {"unit": "Hs", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "fieldConfig": {"defaults": {"unit": "suffix: TH/s", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 10, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
     },
     {
@@ -117,7 +117,7 @@
       "datasource": {"type": "prometheus", "uid": "${DS_PROMETHEUS}"},
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 4},
       "targets": [{"refId": "A", "expr": "antminer_chain_hashrate_ghs{instance=~\"$instance\"} / 1000", "legendFormat": "{{instance}} chain {{chain}}"}],
-      "fieldConfig": {"defaults": {"unit": "Hs", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never", "spanNulls": true}}, "overrides": []},
+      "fieldConfig": {"defaults": {"unit": "suffix: TH/s", "custom": {"drawStyle": "line", "lineInterpolation": "linear", "lineWidth": 2, "fillOpacity": 8, "showPoints": "never", "spanNulls": true}}, "overrides": []},
       "options": {"legend": {"displayMode": "table", "placement": "bottom", "calcs": ["lastNotNull"]}, "tooltip": {"mode": "multi", "sort": "none"}}
     },
     {
